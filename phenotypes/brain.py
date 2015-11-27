@@ -79,6 +79,12 @@ class Brain(Phenotype):
         for neuron_id in inputs:
             tree_builder(neuron_id)
 
+    @property
+    def viable(self):
+        if not self.inputs or not self.outputs:
+            return False
+        return True
+
     def get_neuron(self, neuron_id):
         try:
             index = self.hiddens.index(neuron_id)

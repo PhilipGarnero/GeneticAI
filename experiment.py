@@ -24,14 +24,17 @@ class Experiment(object):
 
     @staticmethod
     def evaluate_fitness(actor):
+        if actor.dead:
+            return 0xFFFFFFF
         x = actor.position[0] - float(actor.world.point[0])
         y = actor.position[1] - float(actor.world.point[1])
         vec_len = float(math.sqrt((x**2) + (y**2)))
-        return vec_len
+        color_diff = float(abs(0x00F - actor.body.color))
+        vertex_handicap = float(len(actor.body.polygon)**3)
+        return vec_len + color_diff + vertex_handicap
 
     def create_actor(self, genotype=None):
-        positions = [(0, 0), (self.world.SIZE[0], 0), (0, self.world.SIZE[1]), (self.world.SIZE[0], self.world.SIZE[1])]
-        actor = Actor(self.world, self.pop_index, self.evaluate_fitness, genotype=genotype, position=random.choice(positions))
+        actor = Actor(self.world, self.pop_index, self.evaluate_fitness, genotype=genotype, position=(0, 0))
         self.pop_index += 1
         return actor
 

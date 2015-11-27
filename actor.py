@@ -10,16 +10,20 @@ class Actor(object):
         self._fitness_evaluation_function = fitness_evaluation
         self._fitness = None
         self.genotype = genotype or Genotype()
-        self.brain = self.genotype.get_phenotype("brain")
-        self.properties = self.genotype.get_phenotype("properties")
-        self.body = self.genotype.get_phenotype("body")
-        if self.body.polygon is None or self.body.color is None:
-            self.properties.speed = 0
+        self.build_phenotype()
         self.position = position or (random.randint(0, world.SIZE[0]),
                                      random.randint(0, world.SIZE[1]))
 
     def __repr__(self):
         return "{1}  {0}  {2}".format(self._fitness, self.id, self.genotype)
+
+    def build_phenotype(self):
+        self.dead = False
+        self.brain = self.genotype.get_phenotype("brain")
+        self.properties = self.genotype.get_phenotype("properties")
+        self.body = self.genotype.get_phenotype("body")
+        if not (self.brain.viable and self.body.viable and self.properties.viable):
+            self.dead = True
 
     def fitness_evaluation(self, *args, **kwargs):
         self._fitness = self._fitness_evaluation_function(self, *args, **kwargs)
@@ -44,13 +48,15 @@ class Actor(object):
         return norm_x, norm_y
 
     def update(self):
+        if self.dead:
+            return
         xu, yu = self.directions_to_center()
         x, y = self.brain.think([xu, yu], 2)
         self.move(x, y)
 
         for color, shape in self.body.parts():
             if color and shape:
-                self.world.draw(color, self.translate_shape(shape))
+                self.world.draw(((color + 1) ** 2) - 1, self.translate_shape(shape))
 
     def move(self, where_x, where_y):
         xo, yo = self.position

@@ -17,3 +17,9 @@ class Body(Phenotype):
 
     def parts(self):
         return [(self.color, self.polygon)]
+
+    @property
+    def viable(self):
+        if self.color is None or self.polygon is None:
+            return False
+        return True

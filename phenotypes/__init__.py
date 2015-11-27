@@ -9,3 +9,7 @@ class Phenotype(object):
             return self.definition[attr]
         except KeyError:
             raise AttributeError("'{0}' object has no attribute '{1}'".format(self.__class__.__name__, attr))
+
+    @property
+    def viable(self):
+        return True

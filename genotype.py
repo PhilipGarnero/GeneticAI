@@ -25,7 +25,7 @@ class Genotype(object):
             "required": False,
             "phenotype": Body,
             "apex_length": 2,
-            "color_length": 6,
+            "color_length": 3,
         },
         "brain": {
             "gene_id": "02",
