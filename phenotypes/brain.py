@@ -6,12 +6,9 @@ from . import Phenotype
 
 
 class Brain(Phenotype):
-    NEURON_ID_CODE_LENGTH = 1
-    CONNECTION_WEIGHT_CODE_LENGTH = 4
-    CONNECTION_CODE_LENGTH = 2 * NEURON_ID_CODE_LENGTH + CONNECTION_WEIGHT_CODE_LENGTH
-
     def __init__(self, *args, **kwargs):
         super(Brain, self).__init__(*args, **kwargs)
+        self.connection_code_length = 2 * self.neuron_id_code_length + self.connection_weight_code_length
         self.inputs = []
         self.hiddens = []
         self.outputs = []
@@ -19,17 +16,17 @@ class Brain(Phenotype):
         self.gene_parser()
 
     def gene_parser(self):
-        base_10_max = float(self.genotype.GENE_BASE**self.CONNECTION_WEIGHT_CODE_LENGTH / 2)
+        base_10_max = float(self.genotype.GENE_BASE**self.connection_weight_code_length / 2)
         connections = []
         for gene in self.genes:
-            codes = ["".join(gene[i:i + self.CONNECTION_CODE_LENGTH])
-                     for i in xrange(0, len(gene), self.CONNECTION_CODE_LENGTH)]
-            if len(codes[-1]) < self.CONNECTION_CODE_LENGTH:
+            codes = ["".join(gene[i:i + self.connection_code_length])
+                     for i in xrange(0, len(gene), self.connection_code_length)]
+            if len(codes[-1]) < self.connection_code_length:
                 del codes[-1]
             for code in codes:
-                in_neuron_id = int(code[:self.NEURON_ID_CODE_LENGTH], self.genotype.GENE_BASE)
-                weight = (float(int(code[self.NEURON_ID_CODE_LENGTH:self.NEURON_ID_CODE_LENGTH + self.CONNECTION_WEIGHT_CODE_LENGTH], self.genotype.GENE_BASE)) - base_10_max) / base_10_max
-                out_neuron_id = int(code[self.NEURON_ID_CODE_LENGTH + self.CONNECTION_WEIGHT_CODE_LENGTH:], self.genotype.GENE_BASE)
+                in_neuron_id = int(code[:self.neuron_id_code_length], self.genotype.GENE_BASE)
+                weight = (float(int(code[self.neuron_id_code_length:self.neuron_id_code_length + self.connection_weight_code_length], self.genotype.GENE_BASE)) - base_10_max) / base_10_max
+                out_neuron_id = int(code[self.neuron_id_code_length + self.connection_weight_code_length:], self.genotype.GENE_BASE)
                 connections.append((in_neuron_id, weight, out_neuron_id))
         self.net_builder(connections)
 

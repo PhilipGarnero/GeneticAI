@@ -13,9 +13,10 @@ class Actor(object):
         self.brain = self.genotype.get_phenotype("brain")
         self.properties = self.genotype.get_phenotype("properties")
         self.body = self.genotype.get_phenotype("body")
-        positions = [(0, 0), (world.SIZE[0], 0), (0, world.SIZE[1]), (world.SIZE[0], world.SIZE[1])]
-        self.position = position or random.choice(positions)# (random.randint(0, world.SIZE[0]),
-                                    # random.randint(0, world.SIZE[1]))
+        if self.body.polygon is None or self.body.color is None:
+            self.properties.speed = 0
+        self.position = position or (random.randint(0, world.SIZE[0]),
+                                     random.randint(0, world.SIZE[1]))
 
     def __repr__(self):
         return "{1}  {0}  {2}".format(self._fitness, self.id, self.genotype)
@@ -48,12 +49,13 @@ class Actor(object):
         self.move(x, y)
 
         for color, shape in self.body.parts():
-            self.world.draw(color, self.translate_shape(shape))
+            if color and shape:
+                self.world.draw(color, self.translate_shape(shape))
 
     def move(self, where_x, where_y):
         xo, yo = self.position
-        xo += where_x * self.world.tslf / 10
-        yo += where_y * self.world.tslf / 10
+        xo += where_x * self.world.tslf / 10 * self.properties.speed
+        yo += where_y * self.world.tslf / 10 * self.properties.speed
         self.position = min(max(0, xo), self.world.SIZE[0] - 5), min(max(0, yo), self.world.SIZE[1] - 5)
 
     def translate_shape(self, shape):

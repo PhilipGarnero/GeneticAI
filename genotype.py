@@ -21,19 +21,30 @@ class Genotype(object):
     GENE_STOP = "FF"
     GENE_DEFINITION = {
         "body": {
-            "id": "01",
+            "gene_id": "01",
             "required": False,
-            "phenotype": Body
+            "phenotype": Body,
+            "apex_length": 2,
+            "color_length": 6,
         },
         "brain": {
-            "id": "02",
+            "gene_id": "02",
             "required": True,
-            "phenotype": Brain
+            "phenotype": Brain,
+            "neuron_id_code_length": 1,
+            "connection_weight_code_length": 4,
         },
         "properties": {
-            "id": "03",
+            "gene_id": "03",
             "required": False,
-            "phenotype": Properties
+            "phenotype": Properties,
+            "id_length": 1,
+            "list": {
+                "1": "speed"
+            },
+            "defaults": {
+                "speed": 1
+            },
         }
     }
 
@@ -48,7 +59,7 @@ class Genotype(object):
 
     def generate_dna(self):
         important_codes = [self.GENE_START, self.GENE_STOP]
-        gene_codes = [x["id"] for x in self.GENE_DEFINITION.values()]
+        gene_codes = [x["gene_id"] for x in self.GENE_DEFINITION.values()]
         self.dna = []
         while not self.viable:
             self.dna = [random.choice(self.GENE_CHAR_POOL) for _ in
@@ -99,10 +110,10 @@ class Genotype(object):
     genes = property(get_genes, set_genes)
 
     def get_genes_for_phenotype(self, name):
-        return self.genes.get(self.GENE_DEFINITION[name]['id'], [])
+        return self.genes.get(self.GENE_DEFINITION[name]['gene_id'], [])
 
     def get_phenotype(self, name):
-        return self.GENE_DEFINITION[name]["phenotype"](self, self.get_genes_for_phenotype(name))
+        return self.GENE_DEFINITION[name]["phenotype"](self, self.get_genes_for_phenotype(name), self.GENE_DEFINITION[name])
 
     @property
     def viable(self):

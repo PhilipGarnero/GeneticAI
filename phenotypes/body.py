@@ -1,18 +1,19 @@
-import random
 from . import Phenotype
 
 
 class Body(Phenotype):
-    APEX_STEP = 2
-
     def __init__(self, *args, **kwargs):
         super(Body, self).__init__(*args, **kwargs)
-        self.polygons = []
-        self.polygons.append([(0, 0), (5, 0), (5, 5), (0, 5)])
-        self.colors = [random.randint(0x000000, 0xFFFFFF)]
-        # for gene in genes:
-        #     shape = [int(gene[i:i+2], 16) for i in xrange(0, len(gene - 2), self.APEX_STEP)]
-        #     self.polygons.append(shape)
+        self.color = None
+        self.polygon = None
+        for gene in self.genes:
+            if len(gene) > self.color_length:
+                self.color = int("".join(gene[:self.color_length]), self.genotype.GENE_BASE)
+            self.polygon = [(int("".join(gene[i:i+self.apex_length/2]), self.genotype.GENE_BASE),
+                             int("".join(gene[i+self.apex_length/2:i+self.apex_length]), self.genotype.GENE_BASE))
+                            for i in xrange(self.color_length, len(gene) - self.apex_length, self.apex_length)]
+            if len(self.polygon) < 3:
+                self.polygon = None
 
     def parts(self):
-        return zip(self.colors, self.polygons)
+        return [(self.color, self.polygon)]

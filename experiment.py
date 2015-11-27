@@ -1,4 +1,5 @@
 import math
+import random
 from genotype import Genotype
 from world import World
 from actor import Actor
@@ -29,7 +30,8 @@ class Experiment(object):
         return vec_len
 
     def create_actor(self, genotype=None):
-        actor = Actor(self.world, self.pop_index, self.evaluate_fitness, genotype=genotype)
+        positions = [(0, 0), (self.world.SIZE[0], 0), (0, self.world.SIZE[1]), (self.world.SIZE[0], self.world.SIZE[1])]
+        actor = Actor(self.world, self.pop_index, self.evaluate_fitness, genotype=genotype, position=random.choice(positions))
         self.pop_index += 1
         return actor
 

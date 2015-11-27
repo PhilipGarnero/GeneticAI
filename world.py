@@ -7,7 +7,7 @@ from pygame.locals import *
 class World(object):
     FPS = 30
     SIZE = (1024, 768)
-    TIME_BETWEEN_GEN = 1
+    TIME_BETWEEN_GEN = 0
 
     def __init__(self, experiment):
         self.experiment = experiment
